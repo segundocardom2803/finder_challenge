@@ -1,0 +1,57 @@
+extend layouts/layout
+block header
+	.title
+		h1 Finder Challenge
+	.search
+		form(method="post")
+			input#txtSearch.input(type="text")
+			button#btnBuscar.btn(ng-click="buscarTexto()") Buscar
+			button#saveSearch.btn(ng-click="guardarBusqueda()") Guardar Búsqueda&nbsp;
+				i.fa.fa-floppy-o(aria-hidden="true")
+block contenido
+	article#aside
+		.guardadas.item_aside
+			h3 Búsquedas guardadas
+			ul
+				li.child(ng-repeat="guardado in guardados")
+					a(href="javascript:void(0)",ng-click="obtenerGuardado($event)"){{guardado.label}}
+		.categorias.item_aside
+			h3 Categorías
+			ul
+				li.todos(ng-click="mostrarTodos()") Todos
+				li.child(ng-repeat="categoria in categorias")
+					a(href="#/{{categoria.label}}",ng-click="verCategoria($event)"){{categoria.label}}
+		.idiomas.item_aside
+			h3 Idioma
+			ul
+				li.todos(ng-click="mostrarTodos()") Todos
+				li.child(ng-repeat="idioma in idiomas")
+					a(href="#/{{idioma.label}}",ng-click="verIdiomas($event,idioma.id)"){{idioma.label}}
+		.publicacion.item_aside
+			h3 Publicación
+			ul
+				li.todos(ng-click="mostrarTodos()") Todos
+				li.child
+					a(href="#/hoy") Hoy
+				li.child
+					a(href="#/semana") Hace una semana
+				li.child
+					a(href="#/mes") Hace un mes
+				li.child
+					a(href="#/anio") Hace un año
+		.presentacion.item_aside
+			h3 Presentación
+			ul
+				li.todos(ng-click="mostrarTodos()") Todos
+				li.child(ng-repeat="presentacion in presentaciones")
+					a(href="#/{{presentacion.label}}",ng-click="verEdicion($event,presentacion.id)") {{presentacion.label}}
+	article#content
+		.data
+			.item_data(ng-repeat="data in dataPagina")
+				figure
+					img(src="{{data.image}}", alt="Img")
+				h2 {{data.title}}
+				p {{data.teaser}}
+		.paginas
+			ul
+				li(ng-repeat="pagina in paginas",ng-click="mostrarPagina(pagina)",class="pagina_{{pagina}}") {{pagina}}

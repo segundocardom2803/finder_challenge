@@ -1,0 +1,28 @@
+{
+  "name": "finder",
+  "version": "1.0.0",
+  "description": "prueba tecnica GEC",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/segundocardom2803/finder_challenge.git"
+  },
+  "author": "Segundo Carmen Dominguez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/segundocardom2803/finder_challenge/issues"
+  },
+  "homepage": "https://github.com/segundocardom2803/finder_challenge#readme",
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-contrib-cssmin": "^2.0.0",
+    "grunt-contrib-jade": "^1.0.0",
+    "grunt-contrib-pug": "^1.0.0",
+    "grunt-contrib-stylus": "^1.2.0",
+    "grunt-contrib-uglify": "^2.2.0",
+    "grunt-contrib-watch": "^1.0.0"
+  }
+}
