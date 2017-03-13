@@ -12,8 +12,15 @@ app.controller('appController',["$scope","urlService","proceso",function(scope,u
 	scope.paginas=[];
 	scope.itemsxpagina=9;
 	$("section#app #aside .item_aside ul li.todos").on('click',function(){
-		window.history.pushState('', '', "/finder/");
+		window.history.pushState('', '', "/finder_challenge/");
 	})
+	$("#txtSearch").keyup(function(){
+		var characterReg = /[`~!@#$%^&*()_°¬|+\-=?;:'",.<>\{\}\[\]\\\/]/gi;
+		var inputVal = $(this).val();
+		if(characterReg.test(inputVal)) {			
+			$(this).val(inputVal.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi,''));
+		}		
+	});	
 	//funciones iniciales
 	scope.cargar=function(func)
 	{
@@ -21,13 +28,6 @@ app.controller('appController',["$scope","urlService","proceso",function(scope,u
 		var dato='';
 		var existe=localStorage.getItem('existe');
 		proceso.procesar(url,dato,func);
-		/*
-		if(existe == null){
-			proceso.procesar(url,dato,func);
-		}else{
-			proceso.procesar2(url,dato,func);
-		}
-		*/
 	}
 	function mostrarCategorias(data)
 	{		
@@ -66,7 +66,7 @@ app.controller('appController',["$scope","urlService","proceso",function(scope,u
 		}
 		scope.paginas=pages;
 	}
-	//mostrar pagina
+	//mostrar elementos por cada página
 	scope.mostrarPagina=function(pagina)
 	{	
 		$("section#app #content .paginas ul li, html section#app #content .paginas ul li").removeClass('active');
@@ -83,7 +83,7 @@ app.controller('appController',["$scope","urlService","proceso",function(scope,u
 		}
 		scope.dataPagina=datos;
 	}	
-	//filtros
+	//muestra los registros filtrados por categoría
 	scope.verCategoria=function(e)
 	{
 		var categoria=$(this)[0].categoria.label;
@@ -106,6 +106,7 @@ app.controller('appController',["$scope","urlService","proceso",function(scope,u
 		console.log(arrExiste)
 		refrescarPagina(arrExiste);
 	}
+	//muestra los registros filtrados por edición
 	scope.verEdicion=function(e,id)
 	{		
 		var arrExiste=[];
@@ -119,6 +120,7 @@ app.controller('appController',["$scope","urlService","proceso",function(scope,u
 		});		
 		refrescarPagina(arrExiste);
 	}
+	//muestra los registros filtrados por idioma
 	scope.verIdiomas=function(e,id)
 	{		
 		var arrExiste=[];
@@ -132,6 +134,49 @@ app.controller('appController',["$scope","urlService","proceso",function(scope,u
 		});		
 		refrescarPagina(arrExiste);
 	}
+	//muestra los registros filtrados por fecha
+	scope.verFecha=function(e,fecha)
+	{		
+		var d = new Date();
+		var fechaMin=restarFechas(d, -fecha);
+		var arrExiste=[];
+		$.each(scope.dataGlobal,function(index,value){
+			fechaPub=value.date_pub;
+			var dif=fechas(fechaPub,fechaMin);
+			if(dif==1){
+				arrExiste.push(value);
+			}
+		});	
+		refrescarPagina(arrExiste);
+	}
+	//función que calcula la fecha según la opción seleccionada
+	function restarFechas(fecha, dias){
+		var fecha = new Date();
+		fecha.setDate(fecha.getDate() + dias);
+		fecha=(fecha.getMonth() +1) + "/" + fecha.getDate() + "/" + fecha.getFullYear();
+		return fecha;
+	}
+	//función que valida si la fecha de publicación esta en el rando de la fecha seleccionada con la fecha actual
+	function fechas(fechaPub,fechaMin)
+	{
+		var fecha = new Date();
+		var fechaHoy=fecha.getFullYear() + "/" + (fecha.getMonth() +1) + "/" + fecha.getDate();
+		var fechaHoy=new Date(fechaHoy);
+		
+		valuesStart=fechaPub.split("/");
+		valuesEnd=fechaMin.split("/");		
+		fechaPub=new Date(valuesStart[2],(valuesStart[0]-1),valuesStart[1]);		
+		fechaMin=new Date(valuesEnd[2],(valuesEnd[0]-1),valuesEnd[1]);		
+
+		if(fechaPub >= fechaMin && fechaPub <= fechaHoy)
+		{
+			return 1;
+		}else{
+			return 0;
+		}
+		
+	}
+	//muestra los registros, los cuales el título coincida con el texto ingresado
 	scope.buscarTexto=function()
 	{
 		var texto=$("#txtSearch").val();
@@ -195,17 +240,10 @@ app.service('proceso', ['$http', function(http) {
 	this.procesar = function(url,dato,retorno,ext) {
 		result = http.post(url, dato);
 		result.then(function(response) {
-			//localStorage.setItem('data',JSON.stringify(response));
-			//localStorage.setItem('existe',true);
 			retorno(response.data,ext);
 		});
 		result.catch(function(error){
 			console.log(error);
 		});
-	};
-	this.procesar2 = function(url,dato,retorno,ext) {
-		txt=localStorage.getItem('data');
-		txt2=JSON.parse(txt);
-		retorno(txt2);
 	};
 }]);
