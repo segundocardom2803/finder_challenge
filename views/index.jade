@@ -32,13 +32,13 @@ block contenido
 			ul
 				li.todos(ng-click="mostrarTodos()") Todos
 				li.child
-					a(href="#/hoy") Hoy
+					a(href="#/hoy",ng-click="verFecha($event,0)") Hoy
 				li.child
-					a(href="#/semana") Hace una semana
+					a(href="#/semana",ng-click="verFecha($event,7)") Hace una semana
 				li.child
-					a(href="#/mes") Hace un mes
+					a(href="#/mes",ng-click="verFecha($event,30)") Hace un mes
 				li.child
-					a(href="#/anio") Hace un año
+					a(href="#/anio",ng-click="verFecha($event,365)") Hace un año
 		.presentacion.item_aside
 			h3 Presentación
 			ul
